@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import quizData from './quiz.json'; // already imported
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const App = () => {
   const [questions, setQuestions] = useState([]);
@@ -64,7 +66,7 @@ const App = () => {
     return `${duration.toFixed(1)}s`;
   };
 
-  if (!user) return <button onClick={handleLogin}>Login to Start Quiz</button>;
+  if (!user) return <Button onClick={handleLogin}>Login to Start Quiz</Button>;
 
   if (showResults) {
     return (
