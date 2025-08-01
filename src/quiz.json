@@ -1,0 +1,27 @@
+[
+  {
+    "question": "Which of the following are fruits?",
+    "options": ["Carrot", "Apple", "Banana", "Spinach"],
+    "correct": [1, 2]
+  },
+  {
+    "question": "Select all prime numbers",
+    "options": ["2", "4", "5", "9"],
+    "correct": [0, 2]
+  },
+  {
+    "question": "Which of these animals are mammals?",
+    "options": ["Shark", "Whale", "Crocodile", "Bat"],
+    "correct": [1, 3]
+  },
+  {
+    "question": "What colors are in the French flag?",
+    "options": ["Red", "Green", "Blue", "White"],
+    "correct": [0, 2, 3]
+  },
+  {
+    "question": "Which of the following are programming languages?",
+    "options": ["Python", "Snake", "JavaScript", "HTML"],
+    "correct": [0, 2, 3]
+  }
+]
