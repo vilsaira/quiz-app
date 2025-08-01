@@ -1,13 +1,15 @@
 [
   {
-    "question": "Mikä seuraavista on totta muistin osalta?",
+    "question": "Millä aivoalueella on keskeinen rooli tunnereaktioiden säätelyssä?",
     "options": [
-      "Ikääntyessä deklaratiivinen muisti paranee",
-      "Proceduraalinen muisti liittyy taitojen oppimiseen",
-      "Työmuisti on rajaton",
-      "Sensorinen muisti säilyy eliniän"
+      "Pikkuaivot",
+      "Aivorunko",
+      "Mantelitumake",
+      "Hippokampus"
     ],
-    "correct": [1]
+    "correct": [
+      2
+    ]
   },
   {
     "question": "Mihin Piaget'n ajattelun kehityksen vaiheeseen kuuluu egosentrisyys?",
@@ -17,17 +19,9 @@
       "Esioperationaalinen vaihe",
       "Sensomotorinen vaihe"
     ],
-    "correct": [2]
-  },
-  {
-    "question": "Mikä seuraavista ei ole Maslow’n tarvehierarkiassa?",
-    "options": [
-      "Itsensä toteuttamisen tarve",
-      "Sosiaalinen tarve",
-      "Esteettinen tarve",
-      "Empaattinen tarve"
-    ],
-    "correct": [3]
+    "correct": [
+      2
+    ]
   },
   {
     "question": "Mikä seuraavista liittyy klassiseen ehdollistumiseen?",
@@ -37,7 +31,9 @@
       "Mallintaminen",
       "Rangaistus"
     ],
-    "correct": [1]
+    "correct": [
+      1
+    ]
   },
   {
     "question": "Mikä seuraavista on validi väittämä kognitiivisista skeemoista?",
@@ -47,6 +43,56 @@
       "Skeemat eivät vaikuta havaitsemiseen",
       "Skeemat ovat aina tietoisia"
     ],
-    "correct": [1]
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "Mikä seuraavista on esimerkki sisäisestä motivaatiosta?",
+    "options": [
+      "Opiskelen saadakseni stipendin",
+      "Opiskelen, koska nautin oppimisesta",
+      "Teen tehtävän, jotta en saa rangaistusta",
+      "Osallistun, koska vanhemmat vaativat"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "Mikä on behavioristisen oppimiskäsityksen keskeinen ajatus?",
+    "options": [
+      "Oppiminen tapahtuu yksinomaan vaistojen ohjaamana",
+      "Oppiminen perustuu vahvistamiseen ja ehdollistumiseen",
+      "Oppiminen ei vaadi ulkoista ärsykettä",
+      "Oppiminen tapahtuu sisäisen motivaation kautta"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "Mikä seuraavista ei ole Maslow’n tarvehierarkiassa?",
+    "options": [
+      "Itsensä toteuttamisen tarve",
+      "Sosiaalinen tarve",
+      "Esteettinen tarve",
+      "Empaattinen tarve"
+    ],
+    "correct": [
+      3
+    ]
+  },
+  {
+    "question": "Mikä seuraavista on totta muistin osalta?",
+    "options": [
+      "Ikääntyessä deklaratiivinen muisti paranee",
+      "Proceduraalinen muisti liittyy taitojen oppimiseen",
+      "Työmuisti on rajaton",
+      "Sensorinen muisti säilyy eliniän"
+    ],
+    "correct": [
+      1
+    ]
   }
 ]
