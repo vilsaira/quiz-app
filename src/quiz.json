@@ -1,27 +1,52 @@
 [
   {
-    "question": "Which of the following are fruits?",
-    "options": ["Carrot", "Apple", "Banana", "Spinach"],
-    "correct": [1, 2]
+    "question": "Mikä seuraavista on totta muistin osalta?",
+    "options": [
+      "Ikääntyessä deklaratiivinen muisti paranee",
+      "Proceduraalinen muisti liittyy taitojen oppimiseen",
+      "Työmuisti on rajaton",
+      "Sensorinen muisti säilyy eliniän"
+    ],
+    "correct": [1]
   },
   {
-    "question": "Select all prime numbers",
-    "options": ["2", "4", "5", "9"],
-    "correct": [0, 2]
+    "question": "Mihin Piaget'n ajattelun kehityksen vaiheeseen kuuluu egosentrisyys?",
+    "options": [
+      "Formaalien operaatioiden vaihe",
+      "Konkreettisten operaatioiden vaihe",
+      "Esioperationaalinen vaihe",
+      "Sensomotorinen vaihe"
+    ],
+    "correct": [2]
   },
   {
-    "question": "Which of these animals are mammals?",
-    "options": ["Shark", "Whale", "Crocodile", "Bat"],
-    "correct": [1, 3]
+    "question": "Mikä seuraavista ei ole Maslow’n tarvehierarkiassa?",
+    "options": [
+      "Itsensä toteuttamisen tarve",
+      "Sosiaalinen tarve",
+      "Esteettinen tarve",
+      "Empaattinen tarve"
+    ],
+    "correct": [3]
   },
   {
-    "question": "What colors are in the French flag?",
-    "options": ["Red", "Green", "Blue", "White"],
-    "correct": [0, 2, 3]
+    "question": "Mikä seuraavista liittyy klassiseen ehdollistumiseen?",
+    "options": [
+      "Vahvistaminen",
+      "Neutraali ärsyke",
+      "Mallintaminen",
+      "Rangaistus"
+    ],
+    "correct": [1]
   },
   {
-    "question": "Which of the following are programming languages?",
-    "options": ["Python", "Snake", "JavaScript", "HTML"],
-    "correct": [0, 2, 3]
+    "question": "Mikä seuraavista on validi väittämä kognitiivisista skeemoista?",
+    "options": [
+      "Skeemat ovat muuttumattomia",
+      "Skeemat muodostuvat kokemusten perusteella",
+      "Skeemat eivät vaikuta havaitsemiseen",
+      "Skeemat ovat aina tietoisia"
+    ],
+    "correct": [1]
   }
 ]
