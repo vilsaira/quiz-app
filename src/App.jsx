@@ -26,22 +26,23 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    if (!user || showResults) return;
+  if (!user || showResults) return;
 
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setEndTime(Date.now());
-          setShowResults(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const interval = setInterval(() => {
+    setTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(interval);
+        setEndTime(Date.now());
+        setTimedOut(true);
+        setShowResults(true);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
 
-    return () => clearInterval(interval);
-  }, [user, showResults]);
+  return () => clearInterval(interval);
+}, [user, showResults]);
 
   const formatTime = (seconds) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -103,16 +104,23 @@ const App = () => {
   }
 
   if (showResults) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
-          <h2 className="text-xl font-bold mb-4">Quiz Results</h2>
-          <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
-          <p>Time Left: {formatTime(timeLeft)}</p>
-        </div>
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
+        <h2 className="text-xl font-bold mb-4">
+          {timedOut ? "Time's Up! You Lost." : "Quiz Results"}
+        </h2>
+        {!timedOut && (
+          <>
+            <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
+            <p>Time Left: {formatTime(timeLeft)}</p>
+          </>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   const question = questions[currentCard];
 
