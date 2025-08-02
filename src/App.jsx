@@ -11,6 +11,7 @@ const App = () => {
   const [endTime, setEndTime] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60); // 1 minute in seconds
 
   useEffect(() => {
     const shuffled = [...quizData].sort(() => Math.random() - 0.5);
@@ -22,6 +23,30 @@ const App = () => {
       setStartTime(Date.now());
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!user || showResults) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setEndTime(Date.now());
+          setShowResults(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [user, showResults]);
+
+  const formatTime = (seconds) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const handleLogin = () => {
     const username = prompt("Enter your name to login:");
@@ -40,6 +65,12 @@ const App = () => {
 
   const handleCheck = () => {
     setChecked(true);
+    const q = questions[currentCard];
+    const userAns = answers[currentCard]?.sort().join(',');
+    const correctAns = q.correct.sort().join(',');
+    if (userAns === correctAns) {
+      setTimeLeft((prev) => prev + 15); // Reward 15 seconds
+    }
   };
 
   const handleNext = () => {
@@ -62,12 +93,6 @@ const App = () => {
     return correct;
   };
 
-  const getTimeTaken = () => {
-    if (!startTime || !endTime) return "0s";
-    const duration = (endTime - startTime) / 1000;
-    return `${duration.toFixed(1)}s`;
-  };
-
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -82,7 +107,7 @@ const App = () => {
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
           <h2 className="text-xl font-bold mb-4">Quiz Results</h2>
           <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
-          <p>Time Taken: {getTimeTaken()}</p>
+          <p>Time Left: {formatTime(timeLeft)}</p>
         </div>
       </div>
     );
@@ -93,7 +118,10 @@ const App = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl">
-        <h1 className="text-lg font-semibold mb-2">Welcome, {user.name}</h1>
+        <div className="flex justify-between mb-4">
+          <h1 className="text-lg font-semibold">Welcome, {user.name}</h1>
+          <div className="text-lg font-mono bg-black text-green-400 px-3 py-1 rounded">{formatTime(timeLeft)}</div>
+        </div>
         <h2 className="text-base font-bold mb-4">{question.question}</h2>
 
         {question.options.map((opt, idx) => {
@@ -106,9 +134,10 @@ const App = () => {
             <div
               key={idx}
               className={
-  `mb-2 p-2 rounded border ` +
-  (showGreen ? 'border-2 border-green-500 ' : '') +
-  (showRed ? 'border-2 border-red-500 ' : '') }
+                'mb-2 p-2 rounded ' +
+                (showGreen ? 'border-4 border-green-500 ' : '') +
+                (showRed ? 'border-2 border-red-500 ' : 'border')
+              }
             >
               <label className="flex items-center space-x-2">
                 <input
