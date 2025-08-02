@@ -11,6 +11,7 @@ const App = () => {
   const [endTime, setEndTime] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60); // 1 minute in seconds
 
   useEffect(() => {
