@@ -96,9 +96,9 @@ const App = () => {
           </label>
         </div>
       ))}
-      <button onClick={handleNext}>
+      <Button onClick={handleNext}>
         {currentCard < questions.length - 1 ? "Next" : "Finish"}
-      </button>
+      </Button>
     </div>
   );
 };
