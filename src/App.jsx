@@ -81,6 +81,8 @@ const App = () => {
   const question = questions[currentCard];
 
   return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl">
     <div>
       <h1>Welcome, {user.name}</h1>
       <h2>{question.question}</h2>
@@ -96,10 +98,12 @@ const App = () => {
           </label>
         </div>
       ))}
-      <Button onClick={handleNext}>
+      <Button onClick={handleNext} className="w-full">
         {currentCard < questions.length - 1 ? "Next" : "Finish"}
       </Button>
     </div>
+      </div>
+      </div>
   );
 };
 
