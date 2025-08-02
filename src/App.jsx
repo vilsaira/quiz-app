@@ -105,9 +105,10 @@ const App = () => {
           return (
             <div
               key={idx}
-              className={\`mb-2 p-2 rounded border 
-                \${showGreen ? 'border-green-500' : ''} 
-                \${showRed ? 'border-red-500' : ''}\`}
+              className={
+  `mb-2 p-2 rounded border ` +
+  (showGreen ? 'border-green-500 ' : '') +
+  (showRed ? 'border-red-500 ' : '') }
             >
               <label className="flex items-center space-x-2">
                 <input
