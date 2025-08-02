@@ -11,8 +11,7 @@ const App = () => {
   const [endTime, setEndTime] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [timedOut, setTimedOut] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60); // 1 minute in seconds
+  const [timeLeft, setTimeLeft] = useState(15); // 1 minute in seconds
 
   useEffect(() => {
     const shuffled = [...quizData].sort(() => Math.random() - 0.5);
@@ -33,8 +32,7 @@ const App = () => {
       if (prev <= 1) {
         clearInterval(interval);
         setEndTime(Date.now());
-        setTimedOut(true);
-        setShowResults(true);
+        setShowResults(true);  // ✅ This shows the results when time runs out
         return 0;
       }
       return prev - 1;
@@ -107,19 +105,13 @@ const App = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
-        <h2 className="text-xl font-bold mb-4">
-          {timedOut ? "Time's Up! You Lost." : "Quiz Results"}
-        </h2>
-        {!timedOut && (
-          <>
-            <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
-            <p>Time Left: {formatTime(timeLeft)}</p>
-          </>
-        )}
+        <h2 className="text-xl font-bold mb-4">Quiz Results</h2>
+        <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
+        <p>Time Left: {formatTime(timeLeft)}</p>
       </div>
     </div>
   );
-}
+  }
 
 
   const question = questions[currentCard];
