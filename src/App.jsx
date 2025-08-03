@@ -11,7 +11,9 @@ const App = () => {
   const [endTime, setEndTime] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15); // 1 minute in seconds
+  const [timeLeft, setTimeLeft] = useState(15); // initial time in game in seconds 
+  const [seenQuestions, setSeenQuestions] = useState(new Set());
+
 
   useEffect(() => {
     const shuffled = [...quizData].sort(() => Math.random() - 0.5);
@@ -68,13 +70,28 @@ const App = () => {
     const q = questions[currentCard];
     const userAns = answers[currentCard]?.sort().join(',');
     const correctAns = q.correct.sort().join(',');
+
     if (userAns === correctAns) {
-      setTimeLeft((prev) => prev + 15); // Reward 15 seconds
+      setSeenQuestions((prev) => new Set(prev).add(q.question));
+      setTimeLeft((prev) => prev + 15);
     }
   };
 
+
   const handleNext = () => {
-    if (currentCard < questions.length - 1) {
+    const q = questions[currentCard];
+    const userAns = answers[currentCard]?.sort().join(',');
+    const correctAns = q.correct.sort().join(',');
+
+    const updatedQuestions = [...questions];
+    const isCorrect = userAns === correctAns;
+
+    if (!isCorrect && !seenQuestions.has(q.question)) {
+      updatedQuestions.push(q); // Put it at the end
+    }
+
+    if (currentCard < updatedQuestions.length - 1) {
+      setQuestions(updatedQuestions);
       setCurrentCard(currentCard + 1);
       setChecked(false);
     } else {
@@ -82,6 +99,7 @@ const App = () => {
       setShowResults(true);
     }
   };
+
 
   const calculateScore = () => {
     let correct = 0;
