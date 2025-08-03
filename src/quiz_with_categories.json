@@ -1,0 +1,62 @@
+[
+  {
+    "question": "Question 1",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": [
+      0
+    ],
+    "category": "Physics"
+  },
+  {
+    "question": "Question 2",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": [
+      1
+    ],
+    "category": "Biology"
+  },
+  {
+    "question": "Question 3",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": [
+      2
+    ],
+    "category": "Physics"
+  },
+  {
+    "question": "Question 4",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": [
+      0
+    ],
+    "category": "Physics"
+  },
+  {
+    "question": "Question 5",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": [
+      1
+    ],
+    "category": "Physics"
+  }
+]
