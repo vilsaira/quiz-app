@@ -3,6 +3,7 @@ import quizDataRaw from './quiz.json';
 import { Button } from "@/components/ui/button";
 
 const App = () => {
+  const [originalQuestions, setOriginalQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [currentCard, setCurrentCard] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -14,27 +15,13 @@ const App = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [seenQuestions, setSeenQuestions] = useState(new Set());
   const [categoryStats, setCategoryStats] = useState({});
+  const [shuffledQuestion, setShuffledQuestion] = useState(null);
 
+  // Load and shuffle questions
   useEffect(() => {
-    // Shuffle questions and options
-    const shuffledQuestions = [...quizDataRaw]
-      .sort(() => Math.random() - 0.5)
-      .map((q) => {
-        const zipped = q.options.map((opt, idx) => ({
-          text: opt,
-          isCorrect: q.correct.includes(idx),
-        }));
-        const shuffled = zipped.sort(() => Math.random() - 0.5);
-        return {
-          question: q.question,
-          category: q.category || 'Unknown',
-          options: shuffled.map(o => o.text),
-          correct: shuffled
-            .map((o, i) => (o.isCorrect ? i : null))
-            .filter(i => i !== null),
-        };
-      });
-    setQuestions(shuffledQuestions);
+    const initial = [...quizDataRaw].sort(() => Math.random() - 0.5);
+    setOriginalQuestions(initial);
+    setQuestions(initial);
   }, []);
 
   useEffect(() => {
@@ -43,9 +30,9 @@ const App = () => {
     }
   }, [user]);
 
+  // Timer
   useEffect(() => {
     if (!user || showResults) return;
-
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -57,9 +44,26 @@ const App = () => {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(interval);
   }, [user, showResults]);
+
+  // Shuffle options for current question
+  useEffect(() => {
+    if (questions.length > 0) {
+      const q = questions[currentCard];
+      const zipped = q.options.map((opt, idx) => ({
+        text: opt,
+        isCorrect: q.correct.includes(idx),
+      }));
+      const shuffled = zipped.sort(() => Math.random() - 0.5);
+      setShuffledQuestion({
+        question: q.question,
+        category: q.category,
+        options: shuffled.map(o => o.text),
+        correct: shuffled.map((o, i) => o.isCorrect ? i : null).filter(i => i !== null),
+      });
+    }
+  }, [currentCard, questions]);
 
   const formatTime = (seconds) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -84,18 +88,17 @@ const App = () => {
 
   const handleCheck = () => {
     setChecked(true);
-    const q = questions[currentCard];
     const userAns = answers[currentCard]?.sort().join(',');
-    const correctAns = q.correct.sort().join(',');
-
+    const correctAns = shuffledQuestion.correct.sort().join(',');
     const isCorrect = userAns === correctAns;
+
     if (isCorrect) {
-      setSeenQuestions((prev) => new Set(prev).add(q.question));
+      setSeenQuestions((prev) => new Set(prev).add(shuffledQuestion.question));
       setTimeLeft((prev) => prev + 15);
     }
 
     setCategoryStats((prev) => {
-      const cat = q.category || 'Unknown';
+      const cat = shuffledQuestion.category || 'Unknown';
       const prevStat = prev[cat] || { correct: 0, total: 0 };
       return {
         ...prev,
@@ -108,15 +111,14 @@ const App = () => {
   };
 
   const handleNext = () => {
-    const q = questions[currentCard];
     const userAns = answers[currentCard]?.sort().join(',');
-    const correctAns = q.correct.sort().join(',');
+    const correctAns = shuffledQuestion.correct.sort().join(',');
     const isCorrect = userAns === correctAns;
 
     const updatedQuestions = [...questions];
-
-    if (!isCorrect && !seenQuestions.has(q.question)) {
-      updatedQuestions.push(q); // re-add incorrect question
+    if (!isCorrect && !seenQuestions.has(shuffledQuestion.question)) {
+      const originalQ = originalQuestions.find(q => q.question === shuffledQuestion.question);
+      updatedQuestions.push(originalQ);
     }
 
     if (currentCard < updatedQuestions.length - 1) {
@@ -130,13 +132,7 @@ const App = () => {
   };
 
   const calculateScore = () => {
-    let correct = 0;
-    questions.forEach((q, i) => {
-      const userAns = answers[i]?.sort().join(',');
-      const correctAns = q.correct.sort().join(',');
-      if (userAns === correctAns) correct++;
-    });
-    return correct;
+    return Object.values(categoryStats).reduce((sum, stat) => sum + stat.correct, 0);
   };
 
   if (!user) {
@@ -165,24 +161,24 @@ const App = () => {
     );
   }
 
-  const question = questions[currentCard];
+  if (!shuffledQuestion) return null;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl">
         <div className="flex flex-col sm:flex-row sm:justify-between mb-4 space-y-2 sm:space-y-0">
           <div>
-            <p className="text-sm text-gray-500 italic">{question.category}</p>
+            <p className="text-sm text-gray-500 italic">{shuffledQuestion.category}</p>
             <p className="text-sm text-gray-600">Question {currentCard + 1} of {questions.length}</p>
           </div>
           <div className="text-lg font-mono bg-black text-green-400 px-3 py-1 rounded text-center w-24">
             {formatTime(timeLeft)}
           </div>
         </div>
-        <h2 className="text-base font-bold mb-4">{question.question}</h2>
+        <h2 className="text-base font-bold mb-4">{shuffledQuestion.question}</h2>
 
-        {question.options.map((opt, idx) => {
-          const isCorrect = question.correct.includes(idx);
+        {shuffledQuestion.options.map((opt, idx) => {
+          const isCorrect = shuffledQuestion.correct.includes(idx);
           const isSelected = answers[currentCard]?.includes(idx);
           const showGreen = checked && isCorrect;
           const showRed = checked && isSelected && !isCorrect;
