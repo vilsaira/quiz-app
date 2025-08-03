@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import quizData from './quiz.json';
+import quizDataRaw from './quiz.json';
 import { Button } from "@/components/ui/button";
 
 const App = () => {
@@ -11,29 +11,31 @@ const App = () => {
   const [endTime, setEndTime] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15); // initial time in game in seconds 
+  const [timeLeft, setTimeLeft] = useState(60);
   const [seenQuestions, setSeenQuestions] = useState(new Set());
-
+  const [categoryStats, setCategoryStats] = useState({});
 
   useEffect(() => {
-    const shuffledQuestions = [...quizData].sort(() => Math.random() - 0.5).map((q) => {
-      const zipped = q.options.map((opt, idx) => ({
-        text: opt,
-        isCorrect: q.correct.includes(idx),
-      }));
-      const shuffled = zipped.sort(() => Math.random() - 0.5);
-      return {
-        question: q.question,
-        options: shuffled.map(o => o.text),
-        correct: shuffled
-          .map((o, i) => (o.isCorrect ? i : null))
-          .filter(i => i !== null),
-      };
-    });
-
+    // Shuffle questions and options
+    const shuffledQuestions = [...quizDataRaw]
+      .sort(() => Math.random() - 0.5)
+      .map((q) => {
+        const zipped = q.options.map((opt, idx) => ({
+          text: opt,
+          isCorrect: q.correct.includes(idx),
+        }));
+        const shuffled = zipped.sort(() => Math.random() - 0.5);
+        return {
+          question: q.question,
+          category: q.category || 'Unknown',
+          options: shuffled.map(o => o.text),
+          correct: shuffled
+            .map((o, i) => (o.isCorrect ? i : null))
+            .filter(i => i !== null),
+        };
+      });
     setQuestions(shuffledQuestions);
   }, []);
-
 
   useEffect(() => {
     if (user && startTime === null) {
@@ -42,22 +44,22 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-  if (!user || showResults) return;
+    if (!user || showResults) return;
 
-  const interval = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(interval);
-        setEndTime(Date.now());
-        setShowResults(true);  // ✅ This shows the results when time runs out
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setEndTime(Date.now());
+          setShowResults(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, [user, showResults]);
+    return () => clearInterval(interval);
+  }, [user, showResults]);
 
   const formatTime = (seconds) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -86,23 +88,35 @@ const App = () => {
     const userAns = answers[currentCard]?.sort().join(',');
     const correctAns = q.correct.sort().join(',');
 
-    if (userAns === correctAns) {
+    const isCorrect = userAns === correctAns;
+    if (isCorrect) {
       setSeenQuestions((prev) => new Set(prev).add(q.question));
       setTimeLeft((prev) => prev + 15);
     }
-  };
 
+    setCategoryStats((prev) => {
+      const cat = q.category || 'Unknown';
+      const prevStat = prev[cat] || { correct: 0, total: 0 };
+      return {
+        ...prev,
+        [cat]: {
+          correct: prevStat.correct + (isCorrect ? 1 : 0),
+          total: prevStat.total + 1,
+        }
+      };
+    });
+  };
 
   const handleNext = () => {
     const q = questions[currentCard];
     const userAns = answers[currentCard]?.sort().join(',');
     const correctAns = q.correct.sort().join(',');
-
-    const updatedQuestions = [...questions];
     const isCorrect = userAns === correctAns;
 
+    const updatedQuestions = [...questions];
+
     if (!isCorrect && !seenQuestions.has(q.question)) {
-      updatedQuestions.push(q); // Put it at the end
+      updatedQuestions.push(q); // re-add incorrect question
     }
 
     if (currentCard < updatedQuestions.length - 1) {
@@ -114,7 +128,6 @@ const App = () => {
       setShowResults(true);
     }
   };
-
 
   const calculateScore = () => {
     let correct = 0;
@@ -135,17 +148,22 @@ const App = () => {
   }
 
   if (showResults) {
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
-        <h2 className="text-xl font-bold mb-4">Quiz Results</h2>
-        <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
-        <p>Time Left: {formatTime(timeLeft)}</p>
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl text-center">
+          <h2 className="text-xl font-bold mb-4">Quiz Results</h2>
+          <p className="mb-2">Correct Answers: {calculateScore()} / {questions.length}</p>
+          <p className="mb-4">Time Left: {formatTime(timeLeft)}</p>
+          <h3 className="font-semibold mb-2">Category Breakdown:</h3>
+          <ul className="text-left list-disc list-inside">
+            {Object.entries(categoryStats).map(([cat, stats]) => (
+              <li key={cat}>{cat}: {stats.correct} / {stats.total}</li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
-  );
+    );
   }
-
 
   const question = questions[currentCard];
 
@@ -153,15 +171,14 @@ const App = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl">
         <div className="flex flex-col sm:flex-row sm:justify-between mb-4 space-y-2 sm:space-y-0">
-  <div>
-    <h1 className="text-lg font-semibold">Welcome, {user.name}</h1>
-    <p className="text-sm text-gray-600">Question {currentCard + 1} of {questions.length}</p>
-  </div>
-  <div className="text-lg font-mono bg-black text-green-400 px-3 py-1 rounded text-center w-24">
-    {formatTime(timeLeft)}
-  </div>
-</div>
-
+          <div>
+            <p className="text-sm text-gray-500 italic">{question.category}</p>
+            <p className="text-sm text-gray-600">Question {currentCard + 1} of {questions.length}</p>
+          </div>
+          <div className="text-lg font-mono bg-black text-green-400 px-3 py-1 rounded text-center w-24">
+            {formatTime(timeLeft)}
+          </div>
+        </div>
         <h2 className="text-base font-bold mb-4">{question.question}</h2>
 
         {question.options.map((opt, idx) => {
