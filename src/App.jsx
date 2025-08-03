@@ -16,9 +16,24 @@ const App = () => {
 
 
   useEffect(() => {
-    const shuffled = [...quizData].sort(() => Math.random() - 0.5);
-    setQuestions(shuffled);
+    const shuffledQuestions = [...quizData].sort(() => Math.random() - 0.5).map((q) => {
+      const zipped = q.options.map((opt, idx) => ({
+        text: opt,
+        isCorrect: q.correct.includes(idx),
+      }));
+      const shuffled = zipped.sort(() => Math.random() - 0.5);
+      return {
+        question: q.question,
+        options: shuffled.map(o => o.text),
+        correct: shuffled
+          .map((o, i) => (o.isCorrect ? i : null))
+          .filter(i => i !== null),
+      };
+    });
+
+    setQuestions(shuffledQuestions);
   }, []);
+
 
   useEffect(() => {
     if (user && startTime === null) {
