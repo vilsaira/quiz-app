@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import quizDataRaw from './quiz.json';
+import quizDataRaw from './quiz_with_categories.json';
 import { Button } from "@/components/ui/button";
 
 const App = () => {
